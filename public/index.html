@@ -1,97 +1,119 @@
-
-
-
-    
-    
-    QuickLinks - URL Shortener
-    
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickLinks</title>
+    <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
         }
-        .container { max-width: 900px; margin: 0 auto; }
-        .header { text-align: center; color: white; margin-bottom: 40px; }
-        .header h1 { font-size: 3em; margin-bottom: 10px; }
-        .card {
+        .container {
             background: white;
-            border-radius: 20px;
             padding: 40px;
+            border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
         }
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        h1 { color: #667eea; text-align: center; }
         input {
-            flex: 1;
+            width: 100%;
             padding: 15px;
-            border: 2px solid #e0e0e0;
+            margin: 10px 0;
+            border: 2px solid #ddd;
             border-radius: 10px;
             font-size: 16px;
+            box-sizing: border-box;
         }
         button {
-            padding: 15px 30px;
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
             border: none;
             border-radius: 10px;
             font-size: 16px;
-            font-weight: 600;
             cursor: pointer;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            font-weight: bold;
         }
-        .result { display: none; background: #f0f7ff; padding: 20px; border-radius: 10px; margin-top: 20px; }
-        .result.show { display: block; }
-        .url-list { margin-top: 30px; }
-        .url-item {
-            background: #f8f9fa;
+        button:hover { background: #5568d3; }
+        .result {
+            display: none;
+            margin-top: 20px;
             padding: 20px;
+            background: #f0f7ff;
             border-radius: 10px;
-            margin-bottom: 15px;
         }
-    
+        .result.show { display: block; }
+        .success { color: #28a745; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ QuickLinks</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">Your URL Shortener is LIVE!</p>
+        
+        <input type="url" id="urlInput" placeholder="Enter a long URL (e.g., https://example.com)">
+        <button onclick="shortenUrl()">✂️ Shorten URL</button>
+        
+        <div id="result" class="result">
+            <p class="success">✅ Success!</p>
+            <p>Your short URL:</p>
+            <input type="text" id="shortUrl" readonly>
+            <button onclick="copyUrl()">📋 Copy Link</button>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h3 style="color: #667eea;">🎉 It's Working!</h3>
+            <p style="color: #666; line-height: 1.6;">
+                Your URL shortener is live and running! Now you can:
+            </p>
+            <ul style="color: #666;">
+                <li>Set up Stripe to accept payments</li>
+                <li>Add a custom domain</li>
+                <li>Start getting customers!</li>
+            </ul>
+        </div>
+    </div>
 
-
-    
-        
-            ⚡ QuickLinks
-            Your URL Shortener is LIVE!
-        
-        
-            Shorten a URL
-            
-                
-                Shorten
-            
-            
-                Your shortened URL:
-                
-                Copy
-            
-            
-        
-    
-    
+    <script>
         async function shortenUrl() {
             const longUrl = document.getElementById('urlInput').value;
-            if (!longUrl) return alert('Please enter a URL');
+            if (!longUrl) {
+                alert('Please enter a URL');
+                return;
+            }
             
-            const response = await fetch('/api/shorten', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ longUrl })
-            });
-            
-            const data = await response.json();
-            document.getElementById('shortUrl').value = data.data.shortUrl;
-            document.getElementById('result').classList.add('show');
-            document.getElementById('urlInput').value = '';
+            try {
+                const response = await fetch('/api/shorten', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ longUrl })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('shortUrl').value = data.data.shortUrl;
+                    document.getElementById('result').classList.add('show');
+                }
+            } catch (error) {
+                alert('Error creating short URL. Please try again.');
+            }
         }
         
         function copyUrl() {
             const input = document.getElementById('shortUrl');
             input.select();
             document.execCommand('copy');
-            alert('Copied!');
+            alert('✅ Link copied to clipboard!');
         }
-    
-
+    </script>
+</body>
+</html>
