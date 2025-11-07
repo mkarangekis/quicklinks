@@ -1,0 +1,97 @@
+
+
+
+    
+    
+    QuickLinks - URL Shortener
+    
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { text-align: center; color: white; margin-bottom: 40px; }
+        .header h1 { font-size: 3em; margin-bottom: 10px; }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .result { display: none; background: #f0f7ff; padding: 20px; border-radius: 10px; margin-top: 20px; }
+        .result.show { display: block; }
+        .url-list { margin-top: 30px; }
+        .url-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+    
+
+
+    
+        
+            ⚡ QuickLinks
+            Your URL Shortener is LIVE!
+        
+        
+            Shorten a URL
+            
+                
+                Shorten
+            
+            
+                Your shortened URL:
+                
+                Copy
+            
+            
+        
+    
+    
+        async function shortenUrl() {
+            const longUrl = document.getElementById('urlInput').value;
+            if (!longUrl) return alert('Please enter a URL');
+            
+            const response = await fetch('/api/shorten', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ longUrl })
+            });
+            
+            const data = await response.json();
+            document.getElementById('shortUrl').value = data.data.shortUrl;
+            document.getElementById('result').classList.add('show');
+            document.getElementById('urlInput').value = '';
+        }
+        
+        function copyUrl() {
+            const input = document.getElementById('shortUrl');
+            input.select();
+            document.execCommand('copy');
+            alert('Copied!');
+        }
+    
+
